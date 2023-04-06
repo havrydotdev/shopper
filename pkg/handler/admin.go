@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type userId struct {
+type idJson struct {
 	Id int `json:"id"`
 }
 
@@ -23,10 +23,16 @@ func (h *Handler) setUserId(c *gin.Context) {
 		return
 	}
 
-	var id userId
+	var id idJson
 
 	if err := c.BindJSON(&id); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	_, err = h.services.Authorization.GetUser(id.Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 

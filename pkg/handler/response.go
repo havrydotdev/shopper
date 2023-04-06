@@ -6,14 +6,16 @@ import (
 )
 
 type ErrorResponse struct {
-	Message string `json:"message"`
+	Error string `json:"error"`
 }
 
 type status struct {
 	Ok bool `json:"ok"`
 }
 
-func newErrorResponse(c *gin.Context, statusCode int, message string) {
-	logrus.Errorf(message)
-	c.AbortWithStatusJSON(statusCode, message)
+func newErrorResponse(c *gin.Context, statusCode int, error string) {
+	logrus.Errorf(error)
+	c.AbortWithStatusJSON(statusCode, ErrorResponse{
+		Error: error,
+	})
 }

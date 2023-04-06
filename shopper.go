@@ -1,6 +1,7 @@
 package shopper
 
 import (
+	"errors"
 	"time"
 )
 
@@ -22,6 +23,20 @@ type Company struct {
 	Description string `json:"description"`
 	Logo        string `json:"logo"`
 	IsVerified  bool   `json:"isVerified"`
+}
+
+type UpdateCompanyInput struct {
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
+	Logo        *string `json:"logo"`
+}
+
+func (u UpdateCompanyInput) Validate() error {
+	if u.Name == nil && u.Logo == nil && u.Description == nil {
+		return errors.New("update struct is empty")
+	}
+
+	return nil
 }
 
 type Property struct {

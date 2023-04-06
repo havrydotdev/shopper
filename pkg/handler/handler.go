@@ -20,11 +20,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/sign-up", h.signUp)
-		auth.POST("/sign-in", h.signIn)
+		auth.POST("/sign-up", h.signUp) // done
+		auth.POST("/sign-in", h.signIn) // done
 	}
 
-	api := router.Group("/api", h.userIdentity)
+	api := router.Group("/api", h.userIdentity) // done
 	{
 		items := api.Group("/items")
 		{
@@ -57,7 +57,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			discounts.POST("/", h.addNewDiscount)
 		}
 
-		users := api.Group("/user/:id")
+		users := api.Group("/user/:id") // implement after notifications
 		{
 			users.DELETE("/", h.deleteUser)
 			users.PUT("/", h.updateUser)
@@ -69,19 +69,21 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		notifications := api.Group("/notifications")
 		{
-			notifications.POST("/", h.addNewNotification)
+			notifications.POST("/", h.addNewNotification) // implement after companies
 		}
 
 		companies := api.Group("/companies")
 		{
-			companies.POST("/", h.addNewCompany)
-			companies.GET("/:id", h.getCompanyById)
-			companies.PUT("/:id", h.updateCompany)
+			companies.POST("/", h.addNewCompany)    // done
+			companies.GET("/:id", h.getCompanyById) // done
+			companies.PUT("/:id", h.updateCompany)  // implement next
 		}
 
-		admin := api.Group("/admin", h.adminIdentity)
+		admin := api.Group("/admin", h.adminIdentity) // done
 		{
-			admin.POST("/set-user-id", h.setUserId)
+			admin.POST("/set-user-id", h.setUserId)                // done
+			admin.POST("/companies/moderation", h.moderateCompany) // done
+			admin.POST("/items/moderation")                        // implement after item routes are done
 		}
 	}
 

@@ -26,6 +26,8 @@ type Discount interface {
 type Company interface {
 	GetCompany(companyId int) (shopper.Company, error)
 	CreateCompany(company shopper.Company, userId int) (int, error)
+	ModerateCompany(id int) error
+	UpdateCompany(userId, companyId int, input shopper.UpdateCompanyInput) error
 }
 
 type Notification interface {
