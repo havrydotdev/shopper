@@ -36,19 +36,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				id.PUT("/", h.updateItem)
 				id.DELETE("/", h.deleteItem)
 
-				comments := id.Group("/comments")
-				{
-					comments.GET("/", h.getAllComments)
-					comments.POST("/", h.addComment)
-					comments.PUT("/:comment_id", h.updateComment)
-					comments.DELETE("/:comment_id", h.deleteComment)
-				}
-
 				ratings := id.Group("/rating")
 				{
 					ratings.POST("/", h.addNewRate)
 				}
 			}
+		}
+
+		comments := api.Group("/comments")
+		{
+			comments.GET("/", h.getAllComments)
+			comments.POST("/", h.addComment)
+			comments.PUT("/:comment_id", h.updateComment)
+			comments.DELETE("/:comment_id", h.deleteComment)
 		}
 
 		discounts := api.Group("/discounts")
@@ -57,17 +57,16 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			discounts.POST("/", h.addNewDiscount)
 		}
 
-		users := api.Group("/user/:id") // implement after notifications
+		users := api.Group("/users") // done
 		{
-			users.DELETE("/", h.deleteUser)
-			users.PUT("/", h.updateUser)
-			users.POST("/balance", h.updateUserBalance)
-			users.GET("/history", h.getUserHistory)
-			users.GET("/return/:item_id", h.returnItem)
-			users.GET("/notifications", h.getUserNotifications)
+			users.DELETE("/delete", h.deleteUser)               // done
+			users.PUT("/", h.updateUser)                        // done
+			users.GET("/history", h.getUserHistory)             // done
+			users.GET("/return/:item_id", h.returnItem)         // in progress
+			users.GET("/notifications", h.getUserNotifications) // done
 		}
 
-		companies := api.Group("/companies")
+		companies := api.Group("/companies") // done
 		{
 			companies.POST("/", h.addNewCompany)    // done
 			companies.GET("/:id", h.getCompanyById) // done
@@ -82,7 +81,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 			notifications := admin.Group("/notifications")
 			{
-				notifications.POST("/", h.addNewNotification) //done
+				notifications.POST("/:id", h.addNewNotification) //done
 			}
 		}
 	}

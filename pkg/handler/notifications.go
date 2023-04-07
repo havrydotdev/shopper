@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"shopper"
+	"strconv"
 	"time"
 )
 
@@ -25,9 +26,10 @@ func (h *Handler) addNewNotification(c *gin.Context) {
 		return
 	}
 
-	userId, err := getUserId(c)
+	userId, err := strconv.Atoi(c.Param("id"))
+
 	if err != nil {
-		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

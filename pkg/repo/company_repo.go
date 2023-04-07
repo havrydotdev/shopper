@@ -80,6 +80,10 @@ func (r *CompanyRepo) UpdateCompany(userId, companyId int, input shopper.UpdateC
 
 	res, err := r.db.Exec(query, args...)
 
+	if err != nil {
+		return err
+	}
+
 	rows, err := res.RowsAffected()
 
 	if rows == 0 {

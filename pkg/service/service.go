@@ -16,6 +16,10 @@ type Item interface {
 }
 
 type User interface {
+	DeleteUser(userId int) error
+	GetUserNotifications(userId int) ([]shopper.Notification, error)
+	GetUserHistory(userId int) ([]shopper.Item, error)
+	UpdateUser(userId int, input shopper.UpdateUserInput) error
 }
 
 type Rating interface {
@@ -54,5 +58,7 @@ func NewService(repos *repo.Repository) *Service {
 		Authorization: NewAuthService(repos.Authorization),
 		Company:       NewCompanyService(repos.Company),
 		Notification:  NewNotificationService(repos.Notification),
+		User:          NewUserService(repos.User),
+		Discount:      NewDiscountService(repos.Discount),
 	}
 }

@@ -19,7 +19,7 @@ CREATE TABLE users (
 CREATE TABLE notifications (
                                id serial PRIMARY KEY,
                                title varchar(64) NOT NULL UNIQUE,
-                               createdAt date NOT NULL UNIQUE,
+                               createdAt date NOT NULL,
                                text varchar(512) NOT NULL,
                                user_id int not null references users (id)
 );
