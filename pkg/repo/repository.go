@@ -31,6 +31,7 @@ type Company interface {
 }
 
 type Notification interface {
+	CreateNotification(notification shopper.Notification) (int, error)
 }
 
 type Comment interface {
@@ -50,5 +51,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthRepo(db),
 		Company:       NewCompanyRepo(db),
+		Notification:  NewNotificationRepo(db),
 	}
 }

@@ -40,7 +40,7 @@ func (h *Handler) addNewCompany(c *gin.Context) {
 	}
 
 	c.Set(companyCtx, id)
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusOK, gin.H{
 		"id": id,
 	})
 }

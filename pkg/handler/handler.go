@@ -67,16 +67,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			users.GET("/notifications", h.getUserNotifications)
 		}
 
-		notifications := api.Group("/notifications")
-		{
-			notifications.POST("/", h.addNewNotification) // implement after companies
-		}
-
 		companies := api.Group("/companies")
 		{
 			companies.POST("/", h.addNewCompany)    // done
 			companies.GET("/:id", h.getCompanyById) // done
-			companies.PUT("/:id", h.updateCompany)  // implement next
+			companies.PUT("/:id", h.updateCompany)  // done
 		}
 
 		admin := api.Group("/admin", h.adminIdentity) // done
@@ -84,6 +79,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			admin.POST("/set-user-id", h.setUserId)                // done
 			admin.POST("/companies/moderation", h.moderateCompany) // done
 			admin.POST("/items/moderation")                        // implement after item routes are done
+
+			notifications := admin.Group("/notifications")
+			{
+				notifications.POST("/", h.addNewNotification) //done
+			}
 		}
 	}
 

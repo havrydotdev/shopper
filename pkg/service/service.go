@@ -32,6 +32,7 @@ type Company interface {
 }
 
 type Notification interface {
+	CreateNotification(notification shopper.Notification) (int, error)
 }
 
 type Comment interface {
@@ -52,5 +53,6 @@ func NewService(repos *repo.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
 		Company:       NewCompanyService(repos.Company),
+		Notification:  NewNotificationService(repos.Notification),
 	}
 }
