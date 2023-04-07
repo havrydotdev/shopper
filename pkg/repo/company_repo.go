@@ -20,7 +20,7 @@ func NewCompanyRepo(db *sqlx.DB) *CompanyRepo {
 
 func (r *CompanyRepo) GetCompany(userId int) (shopper.Company, error) {
 	var company shopper.Company
-	query := fmt.Sprintf("SELECT c.name, c.logo, c.description, c.isverified FROM %s u INNER JOIN %s c on c.id = u.company_id WHERE u.id = $1", users, companies)
+	query := fmt.Sprintf("SELECT c.* FROM %s u INNER JOIN %s c on c.id = u.company_id WHERE u.id = $1", users, companies)
 	err := r.db.Get(&company, query, userId)
 	if err != nil {
 		return shopper.Company{}, err

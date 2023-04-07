@@ -30,3 +30,7 @@ func (s *UserService) GetUserHistory(userId int) ([]shopper.Item, error) {
 func (s *UserService) UpdateUser(userId int, input shopper.UpdateUserInput) error {
 	return s.repo.UpdateUser(userId, input)
 }
+
+func (s *UserService) UpdateUserBalance(userId int, value int) error {
+	return s.repo.UpdateUserBalance(userId, value)
+}

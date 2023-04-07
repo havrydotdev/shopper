@@ -7,7 +7,27 @@ import (
 )
 
 func (h *Handler) updateUserBalance(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
 
+	var balance shopper.UpdateUserBalance
+	if err := c.BindJSON(&balance); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = h.services.UpdateUserBalance(userId, balance.Value)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, status{
+		Ok: true,
+	})
 }
 
 func (h *Handler) getUserHistory(c *gin.Context) {

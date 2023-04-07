@@ -95,3 +95,22 @@ func (r *UserRepo) UpdateUser(userId int, input shopper.UpdateUserInput) error {
 
 	return err
 }
+
+func (r *UserRepo) UpdateUserBalance(userId int, value int) error {
+	query := fmt.Sprintf("UPDATE %s SET balance = balance + $1 WHERE id = $2", users)
+	res, err := r.db.Exec(query, value, userId)
+	if err != nil {
+		return err
+	}
+
+	val, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if val == 0 {
+		return errors.New("0 rows affected")
+	}
+
+	return nil
+}

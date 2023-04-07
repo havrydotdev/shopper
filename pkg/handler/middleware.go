@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -47,6 +48,7 @@ func (h *Handler) adminIdentity(c *gin.Context) {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
+
 	user, err := h.services.GetUser(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
@@ -55,6 +57,15 @@ func (h *Handler) adminIdentity(c *gin.Context) {
 
 	if user.Email == "admin" && user.Username == "admin" {
 		c.Set(adminCtx, true)
+		id := c.GetHeader(userCtx)
+		if id != "" {
+			idInt, err := strconv.Atoi(id)
+			if err != nil {
+				newErrorResponse(c, http.StatusInternalServerError, err.Error())
+				return
+			}
+			c.Set(userCtx, idInt)
+		}
 	}
 }
 

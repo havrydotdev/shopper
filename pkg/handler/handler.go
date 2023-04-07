@@ -36,6 +36,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				id.PUT("/", h.updateItem)
 				id.DELETE("/", h.deleteItem)
 
+				itemComments := id.Group("/comments")
+				{
+					itemComments.POST("/", h.addComment)
+					itemComments.GET("/", h.getCommentsByItem)
+				}
+
+				itemDiscounts := id.Group("/discounts")
+				{
+					itemDiscounts.POST("/", h.addDiscountToItem)
+				}
+
 				ratings := id.Group("/rating")
 				{
 					ratings.POST("/", h.addNewRate)
@@ -46,24 +57,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		comments := api.Group("/comments")
 		{
 			comments.GET("/", h.getAllComments)
-			comments.POST("/", h.addComment)
-			comments.PUT("/:comment_id", h.updateComment)
-			comments.DELETE("/:comment_id", h.deleteComment)
+			comments.PUT("/:id", h.updateComment)
+			comments.DELETE("/:id", h.deleteComment)
 		}
 
-		discounts := api.Group("/discounts")
-		{
-			discounts.GET("/", h.getAllDiscounts)
-			discounts.POST("/", h.addNewDiscount)
-		}
-
-		users := api.Group("/users") // done
+		users := api.Group("/users", h.adminIdentity) // done
 		{
 			users.DELETE("/delete", h.deleteUser)               // done
 			users.PUT("/", h.updateUser)                        // done
 			users.GET("/history", h.getUserHistory)             // done
 			users.GET("/return/:item_id", h.returnItem)         // in progress
 			users.GET("/notifications", h.getUserNotifications) // done
+			users.PUT("/balance", h.updateUserBalance)
 		}
 
 		companies := api.Group("/companies") // done
@@ -75,13 +80,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		admin := api.Group("/admin", h.adminIdentity) // done
 		{
-			admin.POST("/set-user-id", h.setUserId)                // done
 			admin.POST("/companies/moderation", h.moderateCompany) // done
 			admin.POST("/items/moderation")                        // implement after item routes are done
 
 			notifications := admin.Group("/notifications")
 			{
 				notifications.POST("/:id", h.addNewNotification) //done
+			}
+
+			discounts := admin.Group("/discounts")
+			{
+				discounts.POST("/", h.addNewDiscount) // done
 			}
 		}
 	}

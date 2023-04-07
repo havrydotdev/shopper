@@ -20,12 +20,14 @@ type User interface {
 	GetUserNotifications(userId int) ([]shopper.Notification, error)
 	GetUserHistory(userId int) ([]shopper.Item, error)
 	UpdateUser(userId int, input shopper.UpdateUserInput) error
+	UpdateUserBalance(userId int, value int) error
 }
 
 type Rating interface {
 }
 
 type Discount interface {
+	CreateDiscount(discount shopper.Discount) (int, error)
 }
 
 type Company interface {
