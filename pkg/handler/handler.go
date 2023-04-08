@@ -69,7 +69,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			users.POST("/return/", h.returnItem)                // done
 			users.GET("/notifications", h.getUserNotifications) // done
 			users.PUT("/balance", h.updateUserBalance)          // done
-			users.POST("/buy", h.buyItem)                       // in progress
+			users.POST("/buy", h.buyItem)                       // done
 		}
 
 		companies := api.Group("/companies") // done

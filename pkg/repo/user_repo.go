@@ -116,39 +116,113 @@ func (r *UserRepo) UpdateUserBalance(userId int, value int) error {
 }
 
 func (r *UserRepo) ReturnItem(userId, itemId int) error {
+	tx, err := r.db.Begin()
 	query := fmt.Sprintf("UPDATE %s SET balance = balance + items.price FROM %s INNER JOIN %s ih on items.id = ih.item_id WHERE user_id = users.id AND users.id = $1 AND items.id = $2", users, items, itemsHistory)
-	res, err := r.db.Exec(query, userId, itemId)
+	res, err := tx.Exec(query, userId, itemId)
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	val, err := res.RowsAffected()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	if val == 0 {
+		tx.Rollback()
 		return errors.New("this item does not exist in user`s history")
 	}
 
 	query = fmt.Sprintf("DELETE FROM %s WHERE user_id = $1 AND item_id = $2", itemsHistory)
-	res, err = r.db.Exec(query, userId, itemId)
+	res, err = tx.Exec(query, userId, itemId)
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	affected, err := res.RowsAffected()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	if affected == 0 {
+		tx.Rollback()
 		return errors.New("this item does not exist in user`s history")
+	}
+
+	upd := fmt.Sprintf("UPDATE %s SET amount = amount + 1 WHERE id = $1", items)
+	result, err := tx.Exec(upd, itemId)
+
+	x, err := result.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if x == 0 {
+		tx.Rollback()
+		return errors.New("this item does not exist")
 	}
 
 	return nil
 }
 
-//func (r *UserRepo) BuyItem(userId, itemId int) error {
-//	//query := fmt.Sprintf()
-//}
+func (r *UserRepo) BuyItem(userId, itemId int) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	var amount int
+	sel := fmt.Sprintf("SELECT i.amount FROM %s i WHERE i.id = $1", items)
+	err = r.db.Get(&amount, sel, itemId)
+	if err != nil {
+		return err
+	}
+
+	if amount == 0 {
+		return errors.New("there is no enough items to buy one")
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET balance = balance - items.price FROM %s WHERE users.id = $1 AND items.id = $2", users, items)
+	exec, err := tx.Exec(query, userId, itemId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	val, err := exec.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if val == 0 {
+		tx.Rollback()
+		return errors.New("0 rows affected in users, error")
+	}
+
+	update := fmt.Sprintf("UPDATE %s SET amount = amount - 1 WHERE id = $1", items)
+	result, err := tx.Exec(update, itemId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	value, err := result.RowsAffected()
+	if value == 0 {
+		tx.Rollback()
+		return errors.New("0 rows affected in items, error")
+	}
+
+	insert := fmt.Sprintf("INSERT INTO %s (user_id, item_id) VALUES ($1, $2)", itemsHistory)
+	_, err = r.db.Exec(insert, userId, itemId)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
