@@ -34,3 +34,11 @@ func (s *UserService) UpdateUser(userId int, input shopper.UpdateUserInput) erro
 func (s *UserService) UpdateUserBalance(userId int, value int) error {
 	return s.repo.UpdateUserBalance(userId, value)
 }
+
+func (s *UserService) ReturnItem(userId, itemId int) error {
+	return s.repo.ReturnItem(userId, itemId)
+}
+
+func (s *UserService) BuyItem(userId, itemId int) error {
+	return s.repo.BuyItem(userId, itemId)
+}

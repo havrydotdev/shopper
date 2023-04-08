@@ -114,3 +114,41 @@ func (r *UserRepo) UpdateUserBalance(userId int, value int) error {
 
 	return nil
 }
+
+func (r *UserRepo) ReturnItem(userId, itemId int) error {
+	query := fmt.Sprintf("UPDATE %s SET balance = balance + items.price FROM %s INNER JOIN %s ih on items.id = ih.item_id WHERE user_id = users.id AND users.id = $1 AND items.id = $2", users, items, itemsHistory)
+	res, err := r.db.Exec(query, userId, itemId)
+	if err != nil {
+		return err
+	}
+
+	val, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if val == 0 {
+		return errors.New("this item does not exist in user`s history")
+	}
+
+	query = fmt.Sprintf("DELETE FROM %s WHERE user_id = $1 AND item_id = $2", itemsHistory)
+	res, err = r.db.Exec(query, userId, itemId)
+	if err != nil {
+		return err
+	}
+
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return errors.New("this item does not exist in user`s history")
+	}
+
+	return nil
+}
+
+//func (r *UserRepo) BuyItem(userId, itemId int) error {
+//	//query := fmt.Sprintf()
+//}

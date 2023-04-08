@@ -13,6 +13,7 @@ type Authorization interface {
 }
 
 type Item interface {
+	CreateItem(userId int, item shopper.Item) (int, error)
 }
 
 type User interface {
@@ -21,6 +22,8 @@ type User interface {
 	GetUserHistory(userId int) ([]shopper.Item, error)
 	UpdateUser(userId int, input shopper.UpdateUserInput) error
 	UpdateUserBalance(userId int, value int) error
+	ReturnItem(userId, itemId int) error
+	BuyItem(userId, itemId int) error
 }
 
 type Rating interface {
@@ -62,5 +65,6 @@ func NewService(repos *repo.Repository) *Service {
 		Notification:  NewNotificationService(repos.Notification),
 		User:          NewUserService(repos.User),
 		Discount:      NewDiscountService(repos.Discount),
+		Item:          NewItemService(repos.Item),
 	}
 }

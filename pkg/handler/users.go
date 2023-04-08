@@ -47,12 +47,27 @@ func (h *Handler) getUserHistory(c *gin.Context) {
 }
 
 func (h *Handler) returnItem(c *gin.Context) {
-	//userId, err := getUserId(c)
-	//if err != nil {
-	//	newErrorResponse(c, http.StatusUnauthorized, err.Error())
-	//	return
-	//}
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
 
+	var id idJson
+	if err := c.BindJSON(&id); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = h.services.ReturnItem(userId, id.Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, status{
+		Ok: true,
+	})
 }
 
 func (h *Handler) deleteUser(c *gin.Context) {
@@ -115,4 +130,28 @@ func (h *Handler) getUserNotifications(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, notifications)
+}
+
+func (h *Handler) buyItem(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	var item idJson
+	if err := c.BindJSON(&item); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = h.services.BuyItem(userId, item.Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, status{
+		Ok: true,
+	})
 }

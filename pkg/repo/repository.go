@@ -12,6 +12,7 @@ type Authorization interface {
 }
 
 type Item interface {
+	CreateItem(userId int, item shopper.Item) (int, error)
 }
 
 type User interface {
@@ -20,6 +21,8 @@ type User interface {
 	GetUserHistory(userId int) ([]shopper.Item, error)
 	UpdateUser(userId int, input shopper.UpdateUserInput) error
 	UpdateUserBalance(userId int, value int) error
+	ReturnItem(userId, itemId int) error
+	BuyItem(userId, itemId int) error
 }
 
 type Rating interface {
@@ -60,5 +63,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Notification:  NewNotificationRepo(db),
 		User:          NewUserRepo(db),
 		Discount:      NewDiscountRepo(db),
+		Item:          NewItemRepo(db),
 	}
 }

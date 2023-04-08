@@ -28,7 +28,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		items := api.Group("/items")
 		{
-			items.POST("/", h.addItem)
+			items.POST("/", h.addItem) // done
 			items.GET("/", h.getAllItems)
 			id := items.Group("/:id")
 			{
@@ -66,9 +66,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			users.DELETE("/delete", h.deleteUser)               // done
 			users.PUT("/", h.updateUser)                        // done
 			users.GET("/history", h.getUserHistory)             // done
-			users.GET("/return/:item_id", h.returnItem)         // in progress
+			users.POST("/return/", h.returnItem)                // done
 			users.GET("/notifications", h.getUserNotifications) // done
-			users.PUT("/balance", h.updateUserBalance)
+			users.PUT("/balance", h.updateUserBalance)          // done
+			users.POST("/buy", h.buyItem)                       // in progress
 		}
 
 		companies := api.Group("/companies") // done

@@ -35,8 +35,8 @@ CREATE TABLE items (
                        name varchar(128) NOT NULL UNIQUE,
                        description varchar(512),
                        price float NOT NULL,
-                       rating float NOT NULL,
-                       amount int NOT NULL,
+                       rating float NOT NULL default 0,
+                       amount int NOT NULL default 0,
                        keywords varchar(1024),
                        company_id int not null references companies (id),
                        isVerified boolean NOT NULL default false
