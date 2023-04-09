@@ -13,6 +13,9 @@ type Authorization interface {
 
 type Item interface {
 	CreateItem(userId int, item shopper.Item) (int, error)
+	GetItems(verified bool) ([]shopper.Item, error)
+	ModerateItem(id int) error
+	GetItemById(id int) (shopper.Item, error)
 }
 
 type User interface {
@@ -26,6 +29,7 @@ type User interface {
 }
 
 type Rating interface {
+	CreateRate(itemId int, rate shopper.Rate) (int, error)
 }
 
 type Discount interface {
@@ -37,6 +41,7 @@ type Company interface {
 	CreateCompany(company shopper.Company, userId int) (int, error)
 	ModerateCompany(id int) error
 	UpdateCompany(userId, companyId int, input shopper.UpdateCompanyInput) error
+	GetCompanies(verified bool) ([]shopper.Company, error)
 }
 
 type Notification interface {
@@ -64,5 +69,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		User:          NewUserRepo(db),
 		Discount:      NewDiscountRepo(db),
 		Item:          NewItemRepo(db),
+		Rating:        NewRatingRepo(db),
 	}
 }

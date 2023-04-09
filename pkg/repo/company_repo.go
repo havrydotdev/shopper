@@ -45,9 +45,22 @@ func (r *CompanyRepo) CreateCompany(company shopper.Company, userId int) (int, e
 
 func (r *CompanyRepo) ModerateCompany(id int) error {
 	update := fmt.Sprintf("UPDATE %s c SET isverified = true WHERE c.id = $1", companies)
-	_, err := r.db.Exec(update, id)
+	exec, err := r.db.Exec(update, id)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	affected, err := exec.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return errors.New("0 rows affected")
+	}
+
+	return nil
 }
 
 func (r *CompanyRepo) UpdateCompany(userId, companyId int, input shopper.UpdateCompanyInput) error {
@@ -91,4 +104,15 @@ func (r *CompanyRepo) UpdateCompany(userId, companyId int, input shopper.UpdateC
 	}
 
 	return err
+}
+
+func (r *CompanyRepo) GetCompanies(verified bool) ([]shopper.Company, error) {
+	var arr []shopper.Company
+	query := fmt.Sprintf("SELECT * FROM %s WHERE isverified = $1", companies)
+	err := r.db.Select(&arr, query, verified)
+	if err != nil {
+		return nil, err
+	}
+
+	return arr, nil
 }

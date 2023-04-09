@@ -28,13 +28,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		items := api.Group("/items")
 		{
-			items.POST("/", h.addItem) // done
-			items.GET("/", h.getAllItems)
+			items.POST("/", h.addItem)    // done
+			items.GET("/", h.getAllItems) // done
 			id := items.Group("/:id")
 			{
-				id.GET("/", h.getItemById)
+				id.GET("/", h.getItemById) // done
 				id.PUT("/", h.updateItem)
-				id.DELETE("/", h.deleteItem)
+				id.DELETE("/", h.deleteItem) // in progress
 
 				itemComments := id.Group("/comments")
 				{
@@ -49,7 +49,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 				ratings := id.Group("/rating")
 				{
-					ratings.POST("/", h.addNewRate)
+					ratings.POST("/", h.addNewRate) // done
 				}
 			}
 		}
@@ -81,8 +81,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		admin := api.Group("/admin", h.adminIdentity) // done
 		{
-			admin.POST("/companies/moderation", h.moderateCompany) // done
-			admin.POST("/items/moderation")                        // implement after item routes are done
+			adminCompanies := admin.Group("/companies")
+			{
+				adminCompanies.POST("/companies/moderation", h.moderateCompany) // done
+				adminCompanies.GET("/", h.getNotVerifiedCompanies)              // done
+			}
+
+			adminItems := admin.Group("/items")
+			{
+				adminItems.POST("/moderation", h.moderateItem) // done
+				adminItems.GET("/", h.getNotVerifiedItems)     // done
+			}
 
 			notifications := admin.Group("/notifications")
 			{

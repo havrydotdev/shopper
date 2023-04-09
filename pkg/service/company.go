@@ -28,3 +28,7 @@ func (s *CompanyService) GetCompanyById(id int) (shopper.Company, error) {
 func (s *CompanyService) UpdateCompany(userId, companyId int, input shopper.UpdateCompanyInput) error {
 	return s.repo.UpdateCompany(userId, companyId, input)
 }
+
+func (s *CompanyService) GetCompanies(verified bool) ([]shopper.Company, error) {
+	return s.repo.GetCompanies(verified)
+}

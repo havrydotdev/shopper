@@ -79,3 +79,7 @@ type Notification struct {
 	Text      string    `json:"text" binding:"required"`
 	UserId    int       `json:"user_id" db:"user_id"`
 }
+
+type Rate struct {
+	Value float32 `json:"value"`
+}
