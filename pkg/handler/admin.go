@@ -53,7 +53,6 @@ func (h *Handler) moderateCompany(c *gin.Context) {
 	}
 
 	var id idJson
-
 	if err = c.BindJSON(&id); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

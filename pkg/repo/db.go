@@ -16,6 +16,7 @@ const (
 	items         = "items"
 	users         = "users"
 	itemsRatings  = "items_ratings"
+	discountItems = "discounts_items"
 )
 
 type Config struct {

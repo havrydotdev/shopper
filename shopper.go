@@ -6,15 +6,16 @@ import (
 )
 
 type Item struct {
-	Id          int     `json:"id"`
-	Name        string  `json:"name" binding:"required"`
-	Description string  `json:"description"`
-	Price       float32 `json:"price" binding:"required"`
-	Amount      int     `json:"amount" binding:"required"`
-	Keywords    string  `json:"keywords"`
-	Rating      float32 `json:"rating"`
-	CompanyId   int     `json:"company_id" db:"company_id"`
-	IsVerified  bool    `json:"isVerified" db:"isverified"`
+	Id                int     `json:"id"`
+	Name              string  `json:"name" binding:"required"`
+	Description       string  `json:"description"`
+	Price             float32 `json:"price" binding:"required"`
+	Amount            int     `json:"amount" binding:"required"`
+	Keywords          string  `json:"keywords"`
+	Rating            float32 `json:"rating"`
+	CompanyId         int     `json:"company_id" db:"company_id"`
+	IsVerified        bool    `json:"isVerified" db:"isverified"`
+	PriceWithDiscount float32 `json:"priceWithDiscount" db:"price_with_discount"`
 }
 
 type Company struct {
@@ -48,6 +49,22 @@ type UpdateUserInput struct {
 
 func (u UpdateUserInput) Validate() error {
 	if u.Username == nil && u.Email == nil && u.IsTempBlocked == nil && u.Password == nil {
+		return errors.New("update struct is empty")
+	}
+
+	return nil
+}
+
+type UpdateItemInput struct {
+	Name        *string  `json:"name"`
+	Description *string  `json:"description"`
+	Price       *float32 `json:"price"`
+	Amount      *int     `json:"amount"`
+	Keywords    *string  `json:"keywords"`
+}
+
+func (u *UpdateItemInput) Validate() error {
+	if u.Name == nil && u.Amount == nil && u.Keywords == nil && u.Price == nil && u.Description == nil {
 		return errors.New("update struct is empty")
 	}
 

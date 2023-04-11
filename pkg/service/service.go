@@ -17,6 +17,9 @@ type Item interface {
 	GetItems(verified bool) ([]shopper.Item, error)
 	ModerateItem(id int) error
 	GetItemById(id int) (shopper.Item, error)
+	AddDiscountToItem(id, discountId int) (int, error)
+	DeleteItem(userId, itemId int) error
+	UpdateItem(userId, itemId int, input shopper.UpdateItemInput) error
 }
 
 type User interface {
@@ -50,6 +53,8 @@ type Notification interface {
 }
 
 type Comment interface {
+	AddComment(itemId, userId int, input shopper.Comment) (int, error)
+	GetCommentsByItem(id int) ([]shopper.Comment, error)
 }
 
 type Service struct {
@@ -72,5 +77,6 @@ func NewService(repos *repo.Repository) *Service {
 		Discount:      NewDiscountService(repos.Discount),
 		Item:          NewItemService(repos.Item),
 		Rating:        NewRatingService(repos.Rating),
+		Comment:       NewCommentService(repos.Comment),
 	}
 }

@@ -16,6 +16,9 @@ type Item interface {
 	GetItems(verified bool) ([]shopper.Item, error)
 	ModerateItem(id int) error
 	GetItemById(id int) (shopper.Item, error)
+	AddDiscountToItem(id, discountId int) (int, error)
+	DeleteItem(userId, itemId int) error
+	UpdateItem(userId, itemId int, input shopper.UpdateItemInput) error
 }
 
 type User interface {
@@ -49,6 +52,8 @@ type Notification interface {
 }
 
 type Comment interface {
+	AddComment(itemId, userId int, input shopper.Comment) (int, error)
+	GetCommentsByItem(id int) ([]shopper.Comment, error)
 }
 
 type Repository struct {
@@ -59,6 +64,7 @@ type Repository struct {
 	Discount
 	Company
 	Notification
+	Comment
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -70,5 +76,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Discount:      NewDiscountRepo(db),
 		Item:          NewItemRepo(db),
 		Rating:        NewRatingRepo(db),
+		Comment:       NewCommentRepo(db),
 	}
 }

@@ -30,3 +30,20 @@ func (s *ItemService) ModerateItem(id int) error {
 func (s *ItemService) GetItemById(id int) (shopper.Item, error) {
 	return s.repo.GetItemById(id)
 }
+
+func (s *ItemService) AddDiscountToItem(id, discountId int) (int, error) {
+	return s.repo.AddDiscountToItem(id, discountId)
+}
+
+func (s *ItemService) DeleteItem(userId, itemId int) error {
+	return s.repo.DeleteItem(userId, itemId)
+}
+
+func (s *ItemService) UpdateItem(userId, itemId int, input shopper.UpdateItemInput) error {
+	err := input.Validate()
+	if err != nil {
+		return err
+	}
+
+	return s.repo.UpdateItem(userId, itemId, input)
+}
