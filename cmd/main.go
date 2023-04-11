@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"os"
+	"os/signal"
 	"shopper"
 	"shopper/pkg/handler"
 	"shopper/pkg/repo"
 	"shopper/pkg/service"
+	"syscall"
 )
 
 func main() {
@@ -19,7 +23,7 @@ func main() {
 	postgresDB, err := repo.NewPostgresDB(repo.Config{
 		Port:     viper.GetString("db.port"),
 		Host:     viper.GetString("db.host"),
-		Password: viper.GetString("db.password"),
+		Password: os.Getenv("DB_PASSWORD"),
 		Username: viper.GetString("db.username"),
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
@@ -33,8 +37,26 @@ func main() {
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 	srv := new(shopper.Server)
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("Error occured while starting server: %s", err.Error())
+	go func() {
+		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("Error occured while starting server: %s", err.Error())
+		}
+	}()
+
+	logrus.Println("ShopperGo started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Println("ShopperGo is shutting down")
+
+	if err := srv.ShutDown(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutting down: %s", err.Error())
+	}
+
+	if err := postgresDB.Close(); err != nil {
+		logrus.Errorf("error occured on db connection close: %s", err.Error())
 	}
 }
 

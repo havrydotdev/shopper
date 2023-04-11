@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"errors"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"shopper"
@@ -37,4 +38,42 @@ func (r *CommentRepo) GetCommentsByItem(id int) ([]shopper.Comment, error) {
 	}
 
 	return commentArr, nil
+}
+
+func (r *CommentRepo) DeleteComment(userId, id int) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE user_id = $1 AND id = $2", comments)
+	exec, err := r.db.Exec(query, userId, id)
+	if err != nil {
+		return err
+	}
+
+	affected, err := exec.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return errors.New("0 rows affected")
+	}
+
+	return nil
+}
+
+func (r *CommentRepo) UpdateComment(userId, id int, input shopper.UpdateCommentInput) error {
+	query := fmt.Sprintf("UPDATE %s SET text = $1 WHERE user_id = $2 AND id = $3", comments)
+	exec, err := r.db.Exec(query, input.Text, userId, id)
+	if err != nil {
+		return err
+	}
+
+	affected, err := exec.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return errors.New("0 rows affected")
+	}
+
+	return nil
 }

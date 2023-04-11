@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+var (
+	updErr = errors.New("update struct is empty")
+)
+
 type Item struct {
 	Id                int     `json:"id"`
 	Name              string  `json:"name" binding:"required"`
@@ -34,7 +38,7 @@ type UpdateCompanyInput struct {
 
 func (u UpdateCompanyInput) Validate() error {
 	if u.Name == nil && u.Logo == nil && u.Description == nil {
-		return errors.New("update struct is empty")
+		return updErr
 	}
 
 	return nil
@@ -49,7 +53,7 @@ type UpdateUserInput struct {
 
 func (u UpdateUserInput) Validate() error {
 	if u.Username == nil && u.Email == nil && u.IsTempBlocked == nil && u.Password == nil {
-		return errors.New("update struct is empty")
+		return updErr
 	}
 
 	return nil
@@ -65,7 +69,19 @@ type UpdateItemInput struct {
 
 func (u *UpdateItemInput) Validate() error {
 	if u.Name == nil && u.Amount == nil && u.Keywords == nil && u.Price == nil && u.Description == nil {
-		return errors.New("update struct is empty")
+		return updErr
+	}
+
+	return nil
+}
+
+type UpdateCommentInput struct {
+	Text *string `json:"text"`
+}
+
+func (u *UpdateCommentInput) Validate() error {
+	if u.Text == nil {
+		return updErr
 	}
 
 	return nil

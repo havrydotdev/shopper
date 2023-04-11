@@ -54,6 +54,8 @@ type Notification interface {
 type Comment interface {
 	AddComment(itemId, userId int, input shopper.Comment) (int, error)
 	GetCommentsByItem(id int) ([]shopper.Comment, error)
+	DeleteComment(userId, id int) error
+	UpdateComment(userId, id int, input shopper.UpdateCommentInput) error
 }
 
 type Repository struct {

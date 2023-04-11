@@ -38,8 +38,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 				itemComments := id.Group("/comments")
 				{
-					itemComments.POST("/", h.addComment) // in progress
-					itemComments.GET("/", h.getCommentsByItem)
+					itemComments.POST("/", h.addComment)       // done
+					itemComments.GET("/", h.getCommentsByItem) // done
 				}
 
 				itemDiscounts := id.Group("/discounts", h.adminIdentity)
@@ -56,8 +56,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		comments := api.Group("/comments")
 		{
-			comments.PUT("/:id", h.updateComment)
-			comments.DELETE("/:id", h.deleteComment)
+			comments.PUT("/:id", h.updateComment)    // done
+			comments.DELETE("/:id", h.deleteComment) // done
 		}
 
 		users := api.Group("/users", h.adminIdentity) // done
