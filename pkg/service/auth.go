@@ -31,7 +31,7 @@ type tokenClaims struct {
 	UserId int `json:"user_id"`
 }
 
-func (s *AuthService) CreateUser(user shopper.User) (int, error) {
+func (s *AuthService) CreateUser(user shopper.SignUpInput) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 
 	return s.repo.CreateUser(user)

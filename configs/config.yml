@@ -3,6 +3,6 @@ port: "8000"
 db:
   sslmode: "disable"
   username: "postgres"
-  host: "db"
-  port: "5432"
+  host: "localhost"
+  port: "32768"
   dbname: "postgres"

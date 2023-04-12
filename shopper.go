@@ -1,6 +1,7 @@
 package shopper
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 )
@@ -76,7 +77,7 @@ func (u *UpdateItemInput) Validate() error {
 }
 
 type UpdateCommentInput struct {
-	Text *string `json:"text"`
+	Text *string `json:"text" example:"updated text :)"`
 }
 
 func (u *UpdateCommentInput) Validate() error {
@@ -94,15 +95,27 @@ type Property struct {
 }
 
 type Comment struct {
-	Id     int    `json:"id"`
-	Text   string `json:"text"`
-	ItemId int    `json:"item_id"`
+	Id     int    `json:"id" example:"1"`
+	Text   string `json:"text" example:"Such an amazing item!"`
+	ItemId int    `json:"item_id" db:"item_id" example:"1"`
+	UserId int    `json:"user_id" db:"user_id" example:"1"`
 }
 
 type Discount struct {
 	Id       int       `json:"id"`
 	Percent  int       `json:"percent" binding:"required"`
 	Relevant time.Time `json:"relevant" binding:"required"`
+}
+
+type SignUpInput struct {
+	Username string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,max=26"`
+}
+
+type SignInInput struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type Notification struct {
@@ -115,4 +128,18 @@ type Notification struct {
 
 type Rate struct {
 	Value float32 `json:"value"`
+}
+
+type User struct {
+	Id            int           `json:"id"`
+	Username      string        `json:"username" binding:"required"`
+	Email         string        `json:"email" binding:"required,email"`
+	Password      string        `json:"password" binding:"required,max=26"`
+	Balance       float32       `json:"balance"`
+	IsTempBlocked bool          `json:"is_blocked" db:"istempblocked"`
+	CompanyId     sql.NullInt32 `json:"company_id" db:"company_id"`
+}
+
+type UpdateUserBalance struct {
+	Value int `json:"value"`
 }

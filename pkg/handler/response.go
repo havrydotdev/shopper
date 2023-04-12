@@ -6,12 +6,12 @@ import (
 )
 
 type ErrorResponse struct {
-	Error string `json:"error"`
-	Ok    bool   `json:"ok"`
+	Error string `json:"error" example:"something went wrong!"`
+	Ok    bool   `json:"ok" example:"false"`
 }
 
 type status struct {
-	Ok bool `json:"ok"`
+	Ok bool `json:"ok" example:"true"`
 }
 
 func newErrorResponse(c *gin.Context, statusCode int, error string) {

@@ -16,7 +16,7 @@ func NewAuthRepo(db *sqlx.DB) *AuthRepo {
 	}
 }
 
-func (r *AuthRepo) CreateUser(user shopper.User) (int, error) {
+func (r *AuthRepo) CreateUser(user shopper.SignUpInput) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (username, email, password) values ($1, $2, $3) RETURNING id", users)
 	row := r.db.QueryRow(query, user.Username, user.Email, user.Password)

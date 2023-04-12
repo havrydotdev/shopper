@@ -7,6 +7,19 @@ import (
 	"strconv"
 )
 
+// @Summary AddCompany
+// @Security ApiKeyAuth
+// @Tags companies
+// @Description Create comment endpoint
+// @ID addNewCompany
+// @Accept  json
+// @Produce  json
+// @Param input body shopper.Company true "Company body"
+// @Success 200 {object} idJson
+// @Failure 400,404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Failure default {object} ErrorResponse
+// @Router /api/companies [post]
 func (h *Handler) addNewCompany(c *gin.Context) {
 	val, err := getUserId(c)
 	if err != nil {

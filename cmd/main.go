@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
@@ -13,11 +14,25 @@ import (
 	"syscall"
 )
 
+// @title ShopperGo
+// @version 1.0
+// @description Open-source API project for online shop
+
+// @host localhost:8000
+// @BasePath /
+
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	logrus.SetFormatter(new(logrus.TextFormatter))
 
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("Error occures while initializing config file: %s", err.Error())
+	}
+
+	if err := godotenv.Load(); err != nil {
+		logrus.Fatalf("errorResponse occured while initializing server, error: %s", err.Error())
 	}
 
 	postgresDB, err := repo.NewPostgresDB(repo.Config{

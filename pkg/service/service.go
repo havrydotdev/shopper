@@ -6,7 +6,7 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user shopper.User) (int, error)
+	CreateUser(user shopper.SignUpInput) (int, error)
 	GenerateToken(username, password string) (string, error)
 	ParseToken(token string) (int, error)
 	GetUser(userId int) (shopper.User, error)
