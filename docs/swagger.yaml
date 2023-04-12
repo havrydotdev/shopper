@@ -1,0 +1,320 @@
+basePath: /
+definitions:
+  handler.ErrorResponse:
+    properties:
+      error:
+        example: something went wrong!
+        type: string
+      ok:
+        example: false
+        type: boolean
+    type: object
+  handler.status:
+    properties:
+      ok:
+        example: true
+        type: boolean
+    type: object
+  shopper.Comment:
+    properties:
+      id:
+        example: 1
+        type: integer
+      item_id:
+        example: 1
+        type: integer
+      text:
+        example: Such an amazing item!
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  shopper.SignInInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  shopper.SignUpInput:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 26
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  shopper.UpdateCommentInput:
+    properties:
+      text:
+        example: updated text :)
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: Open-source API project for online shop
+  title: ShopperGo
+  version: "1.0"
+paths:
+  /api/comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment endpoint
+      operationId: deleteComment
+      parameters:
+      - description: Comment id to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.status'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteComment
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: Delete comment endpoint
+      operationId: deleteComment
+      parameters:
+      - description: Comment id to be returned
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.status'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteComment
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update comment endpoint
+      operationId: updateComment
+      parameters:
+      - description: Updated comment text
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shopper.UpdateCommentInput'
+      - description: Comment id to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shopper.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateComment
+      tags:
+      - comments
+  /api/items/{item_id}/comments/:
+    post:
+      consumes:
+      - application/json
+      description: Create comment endpoint
+      operationId: addComment
+      parameters:
+      - description: Comment text, user and item id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shopper.Comment'
+      - description: Item id
+        in: path
+        name: item_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shopper.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: AddComment
+      tags:
+      - comments
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sign-in endpoint
+      operationId: login
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shopper.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: SignIn
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Sign-up endpoint
+      operationId: create-account
+      parameters:
+      - description: User`s info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shopper.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: SignUp
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
